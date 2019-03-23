@@ -15,7 +15,16 @@ order = Bottle()
 
 @order.post('/api/order')
 def createOrder():
-    pass
+    bodyRequest = json.load(request.body)
+    conn = psycopg2.connect("user='pr0n00gler' password='pass' host='localhost' dbname='hack'")
+    db = conn.cursor()
+    query = "insert into order values ('{0}','{1}','{2}','{3}')".format(bodyRequest[0],bodyRequest[1],bodyRequest[2],bodyRequest[3])
+    db.execute(query)
+    db.close()
+    conn.close()
+    body = {}
+    body.update(query)
+    return HTTPResponse(status=201, body=body)
 
 
 @order.post('/api/order/<id>/i-here')
@@ -37,7 +46,11 @@ def deleteOrder():
     db.execute(querry)
     db.close()
     conn.close()
-    body = {}
+    db_order = getValue('select * from orders where id = {id}'.format(id))
+    _user_id = db_order[0]
+    _number = db_order[1]
+    _payment_method = db_order[2]
+    body = {"id":id, "user_id":_user_id, "number":_number,"payment_method":_payment_method}
     return HTTPResponse(status=200, body=body)
 
 @order.put('/api/order/<id>')
@@ -47,7 +60,13 @@ def updateOrder():
 
 @order.get('/api/order/<id>')
 def getOrder(id):
-    return id
+    db_order = getValue('select * from orders where id = {id}'.format(id))
+    _user_id = db_order[0]
+    _number = db_order[1]
+    _payment_method = db_order[2]
+    body = {"id":id, "user_id":_user_id, "number":_number,"payment_method":_payment_method}
+    body = {}
+    return HTTPResponse(status=200, body=body)
 
 
 @order.get('/api/order')
