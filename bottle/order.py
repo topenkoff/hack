@@ -2,27 +2,31 @@ from bottle import Bottle, HTTPResponse, request
 import json
 import psycopg2
 
+def getValue(query):
+    connection_db = psycopg2.connect("user='pr0n00gler' password='pass' host='localhost' dbname='hack'")
+    db = connection_db.cursor()
+    db.execute(query)
+    result = db.fetchall()
+    db.close()
+    connection_db.close()
+    return result[0]
 
 order = Bottle()
 
-
 @order.post('/api/order')
 def createOrder():
-    
-    #headerAuth = request.get_header('Authorization')
-    #if headerAuth == 'Bearer MaX_kMWYU8i3wM9P9ZCs6ERkIbCRY0kV':
-    #body = {"id" = _id, "user_id" = _user_id, "number" = _number, "amount" = _amount, "payment_methon" = _payment_method, "user" = {"id" = __id, "username" = __username, "email" = __email, "phone" = __phone, "created_at" = __created_at, "updated_at" = __updated_at}"company" = _company}
-    #return HTTPResponse(body=body, status=code)
-
-
-@order.post('/api/order/<idint>/i-here')
-def clientHere(id):
     pass
+
+
+@order.post('/api/order/<id>/i-here')
+def clientHere(id):
+    return HTTPResponse(status=200, body='')
 
 
 @order.get('/api/order/get-payment-method')
 def getPaymentMethod():
-    pass
+    body = json.dumps(["cash", "e_money"])
+    return HTTPResponse(status=200, body=body)
 
 
 @order.delete('/api/order/<id>')
@@ -33,7 +37,8 @@ def deleteOrder():
     db.execute(querry)
     db.close()
     conn.close()
-    return HTTPResponse(status=200, body='')
+    body = {}
+    return HTTPResponse(status=200, body=body)
 
 @order.put('/api/order/<id>')
 def updateOrder():
@@ -47,9 +52,6 @@ def getOrder(id):
 
 @order.get('/api/order')
 def getOrders():
-    headerAuth = request.get_header('Authorization')
-    bodyRequest = json.load(request.body)
-    conn = psycopg2.connect("user='pr0n00gler' password='pass' host='localhost' dbname='hack'")
-    cursor = conn.cursor()
+    pass
     
 
