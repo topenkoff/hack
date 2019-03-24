@@ -1,6 +1,6 @@
 from bottle import Bottle
 from order import order
-#from products import product
+from products import product
 
 rootApp = Bottle()
 @rootApp.route('/')
@@ -9,4 +9,5 @@ def rootIndex():
 
 if __name__ == '__main__':
     rootApp.merge(order)
-    rootApp.run(debug=True, port=8080)
+    rootApp.merge(product)
+    rootApp.run(debug=True, port=8080, host='10.100.111.211')

@@ -16,7 +16,7 @@ order = Bottle()
 @order.post('/api/order')
 def createOrder():
     bodyRequest = json.load(request.body)
-    conn = psycopg2.connect("user='pr0n00gler' password='pass' host='localhost' dbname='hack'")
+    conn = psycopg2.connect("user='topenkoff' password='' host='localhost' dbname='hack'")
     db = conn.cursor()
     query = "insert into order values ('{0}','{1}','{2}','{3}')".format(bodyRequest[0],bodyRequest[1],bodyRequest[2],bodyRequest[3])
     db.execute(query)
@@ -71,6 +71,15 @@ def getOrder(id):
 
 @order.get('/api/order')
 def getOrders():
-    pass
+    #db_query = getValue('select username, email, description, created_at, status, payment_method from orders, users where users.id = orders.user_id;')
+    body = []
+    conn = psycopg2.connect("user='topenkoff' password='' host='localhost' dbname='hack'")
+    db = conn.cursor()
+    query = 'select username, email, description, orders.status, orders.created_at, payment_method from orders, users where users.id = orders.user_id;'
+    db.execute(query)
+    for row in db:
+        body.append({"username":row[0], "email":row[1], "description":row[2],"created_at":str(row[4]) ,"status":row[3], "price":row[5]})
+    
+    return HTTPResponse(status=200, body=json.dumps(body))
     
 
